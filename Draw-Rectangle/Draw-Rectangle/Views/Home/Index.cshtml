@@ -3,15 +3,49 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+@section Scripts
+{
 
-<div class="text-center">
-
-    <svg width="500" height="550" xmlns="http://www.w3.org/2000/svg">
-        2
-        <rect x="60" y="100" width= @Model.Length height=@Model.Width rx="0" ry="0" style="fill:#778899; stroke:#FF4500; stroke-width:5; fill-opacity:0.7; stroke-opacity:0.6" />
-        3
-    </svg>
-
-
-</div>
     
+    <script src="https://rawgit.com/RickStrahl/jquery-resizable/master/src/jquery-resizable.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $(".resizable").draggable();
+            $(".resizable").resizable({
+                handles: "n, e, s, w"
+            });
+        });
+
+    </script>
+}
+@section Styles
+{
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    <style>
+        
+        .wrap{
+            width: 500px;
+            height: 400px;
+            border: 2px dotted white;
+        }
+        .resizable{
+            width: 100px;
+            height: 100px;
+            border: 2px solid;
+
+        }
+    </style>
+}
+<form id="form1">
+ 
+    <div class="wrap">
+        <div class="resizable"></div>
+    </div>
+</form>
