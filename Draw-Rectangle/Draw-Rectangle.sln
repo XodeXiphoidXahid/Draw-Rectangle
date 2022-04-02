@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Draw-Rectangle", "Draw-Rectangle\Draw-Rectangle.csproj", "{7A0B2C63-7F28-4061-BCC5-8CEAD18C8903}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Draw-Rectangle", "Draw-Rectangle\Draw-Rectangle.csproj", "{7A0B2C63-7F28-4061-BCC5-8CEAD18C8903}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Draw-Rectangle.API", "Draw-Rectangle.API\Draw-Rectangle.API.csproj", "{2EB6255E-9696-4448-81E5-3A811FDDDCED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7A0B2C63-7F28-4061-BCC5-8CEAD18C8903}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A0B2C63-7F28-4061-BCC5-8CEAD18C8903}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A0B2C63-7F28-4061-BCC5-8CEAD18C8903}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EB6255E-9696-4448-81E5-3A811FDDDCED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EB6255E-9696-4448-81E5-3A811FDDDCED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EB6255E-9696-4448-81E5-3A811FDDDCED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EB6255E-9696-4448-81E5-3A811FDDDCED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

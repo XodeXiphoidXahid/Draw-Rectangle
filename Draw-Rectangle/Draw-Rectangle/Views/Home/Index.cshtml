@@ -6,20 +6,298 @@
 @section Scripts
 {
 
-    
+
     <script src="https://rawgit.com/RickStrahl/jquery-resizable/master/src/jquery-resizable.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-
+    <script src="http://code.interactjs.io/interact-1.2.4.min.js"></script>
+    <script src="https://cdn.rawgit.com/Herst/d3-zoom/ac2cab0ce1f1515312ec68b4e5594d19dd473dd2/build/d3.js"></script>
+    
 
     <script type="text/javascript">
-        $(function () {
-            $(".resizable").draggable();
-            $(".resizable").resizable({
-                handles: "n, e, s, w"
-            });
+
+        data = [
+            { id: 1, x: -75, y: -75, width: 150, height: 150 }
+        ];
+
+        var MAP_HEIGHT = 2500;
+        var MAP_WIDTH = MAP_HEIGHT * Math.sqrt(2);
+
+        var MAX_TRANSLATE_X = MAP_WIDTH / 2;
+        var MIN_TRANSLATE_X = -MAX_TRANSLATE_X;
+
+        var MAX_TRANSLATE_Y = MAP_HEIGHT / 2;
+        var MIN_TRANSLATE_Y = -MAX_TRANSLATE_Y;
+
+        var MIN_RECT_WIDTH = 100;
+        var MIN_RECT_HEIGHT = 100;
+
+        var HANDLE_R = 5;
+        var HANDLE_R_ACTIVE = 12;
+
+        var wrapper = document.getElementById("svgWrapper");
+
+        var height = wrapper.offsetHeight;
+        var width = wrapper.offsetWidth;
+
+        var
+            inpX = document.getElementById("x"),
+            inpY = document.getElementById("y"),
+            inpWidth = document.getElementById("width"),
+            inpHeight = document.getElementById("height");
+
+        var svg = d3.select("svg");
+
+        // for the background
+        svg.append("rect")
+            .style("fill", "grey")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        var g = svg.append("g");
+
+        g.append("rect")
+            .style("fill", "white")
+            .attr("x", MIN_TRANSLATE_X)
+            .attr("y", MIN_TRANSLATE_Y)
+            .attr("width", MAP_WIDTH)
+            .attr("height", MAP_HEIGHT);
+
+        function zoomed() {
+            g.attr("transform", d3.event.transform);
+        }
+
+        var zoom = d3.zoom()
+            .scaleExtent([1 / 4, 4])
+            .translateExtent([
+                [MIN_TRANSLATE_X, MIN_TRANSLATE_Y],
+                [MAX_TRANSLATE_X, MAX_TRANSLATE_Y]
+            ])
+            .constrain(function (transform, extent, translateExtent) {
+                var cx = transform.invertX((extent[1][0] - extent[0][0]) / 2),
+                    cy = transform.invertY((extent[1][1] - extent[0][1]) / 2),
+                    dcx0 = Math.min(0, cx - translateExtent[0][0]),
+                    dcx1 = Math.max(0, cx - translateExtent[1][0]),
+                    dcy0 = Math.min(0, cy - translateExtent[0][1]),
+                    dcy1 = Math.max(0, cy - translateExtent[1][1]);
+                return transform.translate(
+                    Math.min(0, dcx0) || Math.max(0, dcx1),
+                    Math.min(0, dcy0) || Math.max(0, dcy1)
+                );
+            })
+            .on("zoom", zoomed)
+
+        svg.call(zoom);
+
+        function resizerHover() {
+            var el = d3.select(this), isEntering = d3.event.type === "mouseenter";
+            el
+                .classed("hovering", isEntering)
+                .attr(
+                    "r",
+                    isEntering || el.classed("resizing") ?
+                        HANDLE_R_ACTIVE : HANDLE_R
+                );
+        }
+
+        function rectResizeStartEnd() {
+            var el = d3.select(this), isStarting = d3.event.type === "start";
+            d3.select(this)
+                .classed("resizing", isStarting)
+                .attr(
+                    "r",
+                    isStarting || el.classed("hovering") ?
+                        HANDLE_R_ACTIVE : HANDLE_R
+                );
+        }
+
+        function rectResizing(d) {
+
+            var dragX = Math.max(
+                Math.min(d3.event.x, MAX_TRANSLATE_X),
+                MIN_TRANSLATE_X
+            );
+
+            var dragY = Math.max(
+                Math.min(d3.event.y, MAX_TRANSLATE_Y),
+                MIN_TRANSLATE_Y
+            );
+
+            if (d3.select(this).classed("topleft")) {
+
+                var newWidth = Math.max(d.width + d.x - dragX, MIN_RECT_WIDTH);
+
+                d.x += d.width - newWidth;
+                d.width = newWidth;
+
+                var newHeight = Math.max(d.height + d.y - dragY, MIN_RECT_HEIGHT);
+
+                d.y += d.height - newHeight;
+                d.height = newHeight;
+
+            } else {
+
+                d.width = Math.max(dragX - d.x, MIN_RECT_WIDTH);
+                d.height = Math.max(dragY - d.y, MIN_RECT_HEIGHT);
+
+            }
+
+            update();
+        }
+
+        function rectMoveStartEnd(d) {
+            d3.select(this).classed("moving", d3.event.type === "start");
+        }
+
+        function rectMoving(d) {
+
+            var dragX = Math.max(
+                Math.min(d3.event.x, MAX_TRANSLATE_X - d.width),
+                MIN_TRANSLATE_X
+            );
+
+            var dragY = Math.max(
+                Math.min(d3.event.y, MAX_TRANSLATE_Y - d.height),
+                MIN_TRANSLATE_Y
+            );
+
+            d.x = dragX;
+            d.y = dragY;
+
+            update();
+        }
+
+        function update() {
+
+            var rects = g
+                .selectAll("g.rectangle")
+                .data(data, function (d) {
+                    return d;
+                });
+
+            rects.exit().remove();
+
+            var newRects =
+                rects.enter()
+                    .append("g")
+                    .classed("rectangle", true);
+
+            newRects
+                .append("rect")
+                .classed("bg", true)
+                .attr("fill", "red")
+                .attr("stroke", "black")
+                .attr("stroke-width", 2)
+                .call(d3.drag()
+                    .container(g.node())
+                    .on("start end", rectMoveStartEnd)
+                    .on("drag", rectMoving)
+                );
+
+            newRects
+                .append("g")
+                .classed("circles", true)
+                .each(function (d) {
+                    var circleG = d3.select(this);
+
+                    circleG
+                        .append("circle")
+                        .classed("topleft", true)
+                        .attr("r", HANDLE_R)
+                        .on("mouseenter mouseleave", resizerHover)
+                        .call(d3.drag()
+                            .container(g.node())
+                            .subject(function () {
+                                return { x: d3.event.x, y: d3.event.y };
+                            })
+                            .on("start end", rectResizeStartEnd)
+                            .on("drag", rectResizing)
+                        );
+
+                    circleG
+                        .append("circle")
+                        .classed("bottomright", true)
+                        .attr("r", HANDLE_R)
+                        .on("mouseenter mouseleave", resizerHover)
+                        .call(d3.drag()
+                            .container(g.node())
+                            .subject(function () {
+                                return { x: d3.event.x, y: d3.event.y };
+                            })
+                            .on("start end", rectResizeStartEnd)
+                            .on("drag", rectResizing)
+                        );
+                });
+
+            var allRects = newRects.merge(rects);
+
+            allRects
+                .attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+            allRects
+                .select("rect.bg")
+                .attr("height", function (d) {
+                    return d.height;
+                })
+                .attr("width", function (d) {
+                    return d.width;
+                });
+
+            allRects
+                .select("circle.bottomright")
+                .attr("cx", function (d) {
+                    return d.width;
+                })
+                .attr("cy", function (d) {
+                    return d.height;
+                });
+
+            inpX.value = data[0].x;
+            inpY.value = data[0].y;
+            inpWidth.value = data[0].width;
+            inpHeight.value = data[0].height;
+        }
+
+        function controlChange() {
+            data[0][this.id] = +this.value;
+            update();
+        }
+
+        [inpX, inpY, inpWidth, inpHeight].forEach(function (e) {
+            e.addEventListener("change", controlChange);
         });
+
+        function windowResize() {
+            var zoomTransform = d3.zoomTransform(svg.node());
+
+            var k = zoomTransform.k,
+                x = zoomTransform.x,
+                y = zoomTransform.y;
+
+            x -= width / 2;
+            y -= height / 2;
+
+            height = wrapper.offsetHeight;
+            width = wrapper.offsetWidth;
+            zoom.extent([[0, 0], [width, height]])
+
+            x += width / 2;
+            y += height / 2;
+
+            zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(k));
+        }
+
+        zoom.transform(svg, d3.zoomIdentity.translate(width / 2, height / 2));
+
+        window.addEventListener("resize", windowResize);
+
+        windowResize();
+        update();
+
+
 
     </script>
 }
@@ -29,23 +307,48 @@
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <style>
-        
-        .wrap{
-            width: 500px;
-            height: 400px;
-            border: 2px dotted white;
+        html, body, #svgWrapper, svg {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            touch-action: pinch-zoom;
         }
-        .resizable{
-            width: @Model.Width;
-            height: @Model.Length;
-            border: 2px solid;
 
+        g.circles circle:hover {
+            cursor: move;
         }
+
+        .resizing {
+            fill: blue;
+        }
+
+        .moving {
+            fill: green;
+        }
+
+        #controls {
+            position: absolute;
+            top: 0;
+        }
+
+            #controls input {
+                width: 3em;
+            }
     </style>
 }
-<form id="form1">
- 
-    <div class="wrap">
-        <div class="resizable"></div>
+
+
+<form action="/" method="post">
+    <div id="svgWrapper">
+        <svg></svg>
     </div>
+
+    <fieldset id="controls">
+        <label>x:<input type="text" id="x"></label>
+        <label>y:<input type="text" id="y"></label>
+        <label>width:<input type="text" id="width"></label>
+        <label>height:<input type="text" id="height"></label>
+    </fieldset>
 </form>
+
