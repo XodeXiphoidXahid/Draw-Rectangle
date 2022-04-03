@@ -14,7 +14,6 @@
     <script src="http://code.interactjs.io/interact-1.2.4.min.js"></script>
     <script src="https://cdn.rawgit.com/Herst/d3-zoom/ac2cab0ce1f1515312ec68b4e5594d19dd473dd2/build/d3.js"></script>
 
-
     <script type="text/javascript">
 
         $(function () {
@@ -33,11 +32,11 @@
                     $.ajax({
                         type: "POST",
                         data: JSON.stringify(rectangleProperties),
-                        url: "https://localhost:44316/api/rectangle",
+                        url: "api/rectangle",
                         contentType: "application/json"
                     });
 
-                    alert(width.toString() + " " + height.toString());
+                    
                 }
             });
         });
