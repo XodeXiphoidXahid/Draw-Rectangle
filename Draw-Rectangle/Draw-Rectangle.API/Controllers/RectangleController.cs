@@ -19,12 +19,19 @@ namespace Draw_Rectangle.API.Controllers
     {
         
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
             var model = new RectangleProperties();
             model.LoadPropertiesValue();
 
-            return new string[] { model.Length, model.Width };
+            var recObj = new RectangleProperties()
+            {
+                Length = model.Length,
+                Width = model.Width
+            };
+
+            return Ok(recObj);
+            //return new string[] { model.Length, model.Width };
         }
 
         

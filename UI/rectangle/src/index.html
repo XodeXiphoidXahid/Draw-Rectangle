@@ -6,6 +6,49 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+    
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/RickStrahl/jquery-resizable/master/src/jquery-resizable.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    <script type="text/javascript">
+
+        $(function () {
+            var width = 0;
+            var height = 0;
+
+            $(".resizable").draggable();
+            $(".resizable").resizable({
+                handles: "n, e, s, w, ne, nw, sw, se",
+                stop: function (event, ui) {
+                    width = ui.size.width;
+                    height = ui.size.height;
+                    
+                    var wid=document.getElementById("width");
+                    var hei=document.getElementById("height");
+
+                    wid.value=width;
+                    hei.value=height;
+                    
+                    var rectangleProperties = { Length: height, Width: width };
+
+                    $.ajax({
+                        type: "POST",
+                        data: JSON.stringify(rectangleProperties),
+                        url: "https://localhost:44316/api/rectangle",
+                        contentType: "application/json"
+                    });
+                }
+            });
+        });
+
+
+
+    </script>
 </head>
 <body>
   <app-root></app-root>

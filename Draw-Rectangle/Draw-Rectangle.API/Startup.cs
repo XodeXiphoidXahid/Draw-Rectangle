@@ -26,7 +26,15 @@ namespace Draw_Rectangle.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            
+
+            services.AddCors((setup) =>
+            {
+                setup.AddPolicy("default", (options) =>
+                {
+                    options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +45,7 @@ namespace Draw_Rectangle.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("default");
             app.UseHttpsRedirection();
 
             app.UseRouting();
