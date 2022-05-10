@@ -1,16 +1,31 @@
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("resize").css("height", "{{rect.length}}");
+    $("resize").css("width", "{{rect.width}}");
+    $("svg").attr("height", "{{rect.length}}");
+    $("svg").attr("width", "{{rect.width}}");
+    $("rect").attr("height", "{{rect.length}}");
+    $("rect").attr("width", "{{rect.width}}");
+    
+  });
+</script>
+
+
 <div>
   <h1>Resize Your Rectangle</h1>
 </div>
 <div>
   <div id="wrapper">
-    <div class="wrap" *ngIf="rect">
-      <div class="resizable"></div>
-  </div>
+    <div class="resize" >
+      <svg  fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect  x="0.5" y="0.5"  stroke="black"/>
+      </svg>
+    </div>
+   
 </div>
 
   <fieldset id="controls">
-    <label>Width: <input type="text" id="width"></label>
-    <label> Height: <input type="text" id="height"></label>
+    <label>Width: <input type="text" id="width" value="{{rect.width}}"></label>
+    <label> Height: <input type="text" id="height" value="{{rect.length}}"></label>
   </fieldset>
 </div>
-

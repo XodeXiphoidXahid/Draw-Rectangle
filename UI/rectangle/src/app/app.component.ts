@@ -13,9 +13,9 @@ export class AppComponent implements OnInit{
 
   
   rect: any;  
-
+  width: 50;
+  height: 50;
   constructor(private rectangleService: RectangleService){
-    
   }
   ngOnInit(): void {
     this.getRectangle();

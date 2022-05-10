@@ -16,26 +16,53 @@
     <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <script type="text/javascript">
-
-        $(function () {
-            var width = 0;
-            var height = 0;
-
-            $(".resizable").draggable();
-            $(".resizable").resizable({
-                handles: "n, e, s, w, ne, nw, sw, se",
-                stop: function (event, ui) {
+        $(document).ready(function(){
+            console.log("Here1");
+            var wid=document.getElementById("width");
+            console.log(wid);
+            var hei=document.getElementById("height");
+            console.log(hei);
+            $(".resize").css("height", hei.value);
+            $(".resize").css("width", wid.value);
+            $("svg").attr("height", hei.value);
+            $("svg").attr("width", wid.value);
+            $("rect").attr("height", hei.value);
+            $("rect").attr("width", wid.value);
+            
+        });
+        $(function ()
+          { 
+                $(".resize").draggable();
+                $('.resize').resizable({
+                    ghost: true,
+                    resize: function( event, ui ) {
+                        var wid=document.getElementById("width");
+                        console.log(wid);
+                        var hei=document.getElementById("height");
+                        console.log(hei);
+                    
+                    var width = ui.size.width;
+                    var height = ui.size.height;
+                    
+                    $('svg').attr('width',width);
+                    $('svg').attr('height',height);
+                    $('rect').attr('width',width);
+                    $('rect').attr('height',height);
+                    },
+                    stop: function (event, ui) {
                     width = ui.size.width;
                     height = ui.size.height;
                     
                     var wid=document.getElementById("width");
-                    var hei=document.getElementById("height");
+                        console.log(wid.value);
+                        var hei=document.getElementById("height");
+                        console.log(hei.value);
 
                     wid.value=width;
                     hei.value=height;
                     
                     var rectangleProperties = { Length: height, Width: width };
-
+                    console.log("Here13");
                     $.ajax({
                         type: "POST",
                         data: JSON.stringify(rectangleProperties),
@@ -43,12 +70,18 @@
                         contentType: "application/json"
                     });
                 }
+                 });
+                            
+                var position = $('svg').position();
+                $('.resize').css('top',position.top);
+                $('.resize').css('left',position.left);
+                            
             });
-        });
 
-
-
-    </script>
+        
+        
+        
+        </script>
 </head>
 <body>
   <app-root></app-root>
