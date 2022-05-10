@@ -13,21 +13,25 @@
     <script type="text/javascript" src="https://rawgit.com/RickStrahl/jquery-resizable/master/src/jquery-resizable.js"></script>
     
     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
-    <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <!-- <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> -->
 
     <script type="text/javascript">
-        $(document).ready(function(){
-            console.log("Here1");
-            var wid=document.getElementById("width");
-            console.log(wid);
-            var hei=document.getElementById("height");
-            console.log(hei);
-            $(".resize").css("height", hei.value);
-            $(".resize").css("width", wid.value);
-            $("svg").attr("height", hei.value);
-            $("svg").attr("width", wid.value);
-            $("rect").attr("height", hei.value);
-            $("rect").attr("width", wid.value);
+         $(document).ready(function(){
+            $.ajax({
+                url: "https://localhost:44316/api/rectangle",
+                type: 'GET',
+                dataType: 'json', // added data type
+                success: function(res) {
+                    
+                    $(".resize").css("height", res.length);
+                    $(".resize").css("width", res.width);
+                    $("svg").attr("height", res.length);
+                    $("svg").attr("width", res.width);
+                    $("rect").attr("height", res.length);
+                    $("rect").attr("width", res.width);
+                }
+            });
+               
             
         });
         $(function ()
@@ -36,10 +40,6 @@
                 $('.resize').resizable({
                     ghost: true,
                     resize: function( event, ui ) {
-                        var wid=document.getElementById("width");
-                        console.log(wid);
-                        var hei=document.getElementById("height");
-                        console.log(hei);
                     
                     var width = ui.size.width;
                     var height = ui.size.height;
@@ -80,7 +80,7 @@
 
         
         
-        
+           
         </script>
 </head>
 <body>
