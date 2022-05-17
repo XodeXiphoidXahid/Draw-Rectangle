@@ -1,27 +1,14 @@
-<script type="text/javascript">
-  $(document).ready(function(){
-    $("resize").css("height", "{{rect.length}}");
-    $("resize").css("width", "{{rect.width}}");
-    $("svg").attr("height", "{{rect.length}}");
-    $("svg").attr("width", "{{rect.width}}");
-    $("rect").attr("height", "{{rect.length}}");
-    $("rect").attr("width", "{{rect.width}}");
-    
-  });
-</script>
-
-
-<div>
+<div class="div-Border">
   <h1>Resize Your Rectangle</h1>
 </div>
-<div>
-  <div id="wrapper">
-    <div class="resize" >
-      <svg  fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect  x="0.5" y="0.5"  stroke="black"/>
+<div class="div-Border">
+  <div class="div-Border" id="wrapper">
+    <div  class="resize" >
+      <svg   fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect stroke="black"/>
       </svg>
     </div>
-   
+    
 </div>
 
   <fieldset id="controls">

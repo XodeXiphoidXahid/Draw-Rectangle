@@ -31,7 +31,6 @@ namespace Draw_Rectangle.API.Controllers
             };
 
             return Ok(recObj);
-            //return new string[] { model.Length, model.Width };
         }
 
         
